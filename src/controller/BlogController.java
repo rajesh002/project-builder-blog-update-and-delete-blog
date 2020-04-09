@@ -33,22 +33,22 @@ public class BlogController extends HttpServlet {
 		System.out.println(action);
 		try {
 			switch (action) {
-			case "/new":
+			case "new":
 				showNewForm(request, response);
 				break;
-			case "/insert":
-				//insertBlog(request, response);
+			case "insert":
+				insertBlog(request, response);
 				break;
-			case "/delete":
-				//deleteBlog(request, response);
+			case "delete":
+				deleteBlog(request, response);
 				break;
-			case "/edit":
-				//showEditForm(request, response);
+			case "edit":
+				showEditForm(request, response);
 				break;
-			case "/update":
-				//updateBlog(request, response);
+			case "update":
+				updateBlog(request, response);
 				break;
-			case "/list":
+			case "list":
 				listBlog(request, response);
 				break;
 			default:
@@ -58,15 +58,20 @@ public class BlogController extends HttpServlet {
 			}
 		} catch (SQLException ex) {
 			throw new ServletException(ex);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-
+	
+	BlogDaoImpl blogDAO=new BlogDaoImpl();
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		doGet(request, response);
 	}
 	private void listBlog(HttpServletRequest request, HttpServletResponse response)
-			throws SQLException, IOException, ServletException {
+			throws Exception {
 		BlogDaoImpl blogDAO = new BlogDaoImpl();
 		List<Blog> listBlog = blogDAO.selectAllBlogs();
 		request.setAttribute("listBlog", listBlog);
@@ -79,9 +84,8 @@ public class BlogController extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/blogListView.jsp");
 		dispatcher.forward(request, response);
 	}
-/*
-	private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-			throws SQLException, ServletException, IOException {
+
+	private void showEditForm(HttpServletRequest request, HttpServletResponse response)throws Exception {
 		int id = Integer.parseInt(request.getParameter("id"));
 		Blog existingTodo = blogDAO.selectBlog(id);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/blog-form.jsp");
@@ -90,33 +94,43 @@ public class BlogController extends HttpServlet {
 
 	}
 
-	private void insertBlog(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+	private void insertBlog(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		String title = request.getParameter("title");
 		String username = request.getParameter("username");
 		String description = request.getParameter("description");
 		
-		/*DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-mm-dd");
-		LocalDate targetDate = LocalDate.parse(request.getParameter("targetDate"),df);
+		//DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-mm-dd");
+		//LocalDate targetDate = LocalDate.parse(request.getParameter("targetDate"),df);
 		
-		boolean isDone = Boolean.valueOf(request.getParameter("isDone"));
-		Blog newTodo = new Blog(title, username, description, LocalDate.now(), isDone);
+		//boolean isDone = Boolean.valueOf(request.getParameter("isDone"));
+		//Blog newTodo = new Blog(title, description, LocalDate.now());
+		//Blog newTodo = new Blog(title, username, description, LocalDate.now(), isDone);
+		
+		Blog newTodo = new Blog();
+		newTodo.setBlogDescription(description);
+		newTodo.setBlogTitle(title);
+		newTodo.setPostedOn(LocalDate.now());
 		blogDAO.insertBlog(newTodo);
 		response.sendRedirect("list");
 	}
 
-	private void updateBlog(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+	private void updateBlog(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		int id = Integer.parseInt(request.getParameter("id"));
 		
 		String title = request.getParameter("title");
 		String username = request.getParameter("username");
 		String description = request.getParameter("description");
 		//DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-mm-dd");
-		LocalDate targetDate = LocalDate.parse(request.getParameter("targetDate"));
+		//LocalDate targetDate = LocalDate.parse(request.getParameter("targetDate"));
 		
-		boolean isDone = Boolean.valueOf(request.getParameter("isDone"));
-		Blog updateTodo = new Blog(id, title, username, description, targetDate, isDone);
-		
+		//boolean isDone = Boolean.valueOf(request.getParameter("isDone"));
+		//Blog updateTodo = new Blog(id, title, username, description, targetDate, isDone);
+		Blog updateTodo = new Blog();
+		updateTodo.setBlogDescription(description);
+		updateTodo.setBlogTitle(title);
+		updateTodo.setPostedOn(LocalDate.now());
+		System.out.println("HEY vEERA "+updateTodo);
 		try {
 			blogDAO.updateBlog(updateTodo);
 		} catch (Exception e) {
@@ -127,11 +141,10 @@ public class BlogController extends HttpServlet {
 		response.sendRedirect("list");
 	}
 
-	private void deleteBlog(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+	private void deleteBlog(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		int id = Integer.parseInt(request.getParameter("id"));
 		blogDAO.deleteBlog(id);
 		response.sendRedirect("list");
 	}
 }
-*/
-}
+
